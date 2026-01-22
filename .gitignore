@@ -1,0 +1,45 @@
+# --- Python Core ---
+__pycache__/
+*.py[cod]
+*.class
+
+# --- Environment & Security (CRITICAL) ---
+venv/
+env/
+.venv/
+.env
+
+# --- Docker & Infrastructure ---
+.docker/
+# Block local database folders if they ever get created locally
+postgres_data/
+neo4j_data/
+
+# --- Generated Reports (Day 9 Artifacts) ---
+# We do not commit simulated compliance reports
+*.pdf
+*.csv
+
+# --- OS Metadata ---
+.DS_Store
+.DS_Store?
+._*
+
+# --- IDE Settings ---
+.vscode/
+.idea/
+
+# --- Logs & Temporary DBs ---
+*.log
+*.sqlite3
+
+# --- Testing & Coverage ---
+.pytest_cache/
+.coverage
+htmlcov/
+mypy_cache/
+
+# Audit Logs
+backend/logs/*.jsonl
+backend/logs/*.log
+!backend/logs/.gitkeep
