@@ -1,17 +1,18 @@
 from fastapi import FastAPI
-from app.core.config import settings
+from app.core.config import Settings
+from app.api.v1.endpoints import customers
+
+settings = Settings()
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
-    description="High-Frequency Regulatory Compliance System",
-    version="1.0.0",
-    openapi_url=f"{settings.API_V1_STR}/openapi.json"
+    version=settings.PROJECT_VERSION,
+    description="ZeTheta Regulatory Compliance Engine API"
 )
 
+# Include the Customers Router
+app.include_router(customers.router, prefix="/api/v1/customers", tags=["customers"])
+
 @app.get("/")
-async def health_check():
-    return {
-        "system": "ZeTheta Compliance Engine",
-        "status": "Operational",
-        "clearance": "Top Secret"
-    }
+async def root():
+    return {"message": "Compliance Engine Active", "status": "Green"}
