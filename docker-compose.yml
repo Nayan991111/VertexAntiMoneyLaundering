@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  # Primary Transactional Database
+  postgres_db:
+    image: postgres:15-alpine
+    container_name: compliance_postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secure_password_123
+      POSTGRES_DB: compliance_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Graph Database for AML/Link Analysis
+  neo4j_db:
+    image: neo4j:latest
+    container_name: compliance_neo4j
+    environment:
+      NEO4J_AUTH: neo4j/secure_graph_pass_123
+    ports:
+      - "7474:7474" # HTTP
+      - "7687:7687" # Bolt
+    volumes:
+      - neo4j_data:/data
+
+volumes:
+  postgres_data:
+  neo4j_data:
