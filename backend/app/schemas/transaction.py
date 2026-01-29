@@ -1,26 +1,30 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
-# Base Schema
 class TransactionBase(BaseModel):
-    transaction_id: str = Field(..., description="Unique Transaction Reference (UTR) from bank")
-    amount: float = Field(..., gt=0, description="Transaction amount")
-    currency: str = Field(..., min_length=3, max_length=3, to_upper=True)
-    sender_id: int = Field(..., description="Internal ID of the sending customer")
-    receiver_account: str = Field(..., min_length=5, description="External receiver account/IBAN")
-    transaction_type: str = Field("WIRE", description="WIRE, ACH, SWIFT, etc.")
+    amount: float = Field(..., gt=0, description="Transaction amount must be positive")
+    currency: str = Field(..., min_length=3, max_length=3, pattern=r"^[A-Z]{3}$")
+    transaction_type: str = Field(..., pattern=r"^(DEPOSIT|WITHDRAWAL|TRANSFER|PAYMENT)$")
+    counterparty_name: str = Field(..., min_length=2, max_length=100)
+    counterparty_account: str = Field(..., min_length=5, max_length=50)
+    customer_id: int = Field(..., description="Foreign key linking to the customer")
 
-# Input Schema
+    @field_validator('currency')
+    def validate_currency(cls, v):
+        allowed = ["USD", "EUR", "GBP", "INR", "JPY", "SGD"] # Add more as needed per ZeTheta specs
+        if v not in allowed:
+            raise ValueError(f"Currency {v} is not supported by ZeTheta Engine")
+        return v
+
 class TransactionCreate(TransactionBase):
     pass
 
-# Output Schema
 class TransactionResponse(TransactionBase):
     id: int
-    status: str
-    flagged_reason: Optional[str] = None
     timestamp: datetime
+    status: str  # PENDING, COMPLETED, FLAGGED
+    risk_score: float
 
     class Config:
         from_attributes = True
