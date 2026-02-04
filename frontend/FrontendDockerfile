@@ -1,0 +1,22 @@
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# 1. Install System Dependencies
+RUN apt-get update && apt-get install -y \
+    graphviz \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# 2. Install Python Dependencies
+RUN pip install streamlit pandas requests plotly altair graphviz
+
+# 3. Copy Application Code
+COPY . /app
+
+# 4. Configuration
+EXPOSE 8501
+
+HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health || exit 1
+
+ENTRYPOINT ["streamlit", "run", "dashboard.py", "--server.port=8501", "--server.address=0.0.0.0"]
