@@ -1,0 +1,30 @@
+# --- CORE FRAMEWORK ---
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+pydantic[email]>=2.6.0
+pydantic-settings>=2.1.0
+email-validator>=2.1.0
+
+# --- DATABASE & GRAPH ---
+sqlalchemy>=2.0.25
+asyncpg>=0.29.0
+alembic>=1.13.1
+neo4j>=5.16.0
+
+# --- UTILITIES ---
+rapidfuzz>=3.6.1
+python-dotenv>=1.0.1
+requests>=2.31.0
+reportlab>=4.0.0
+
+# --- TESTING ---
+httpx>=0.26.0
+pytest>=8.0.0
+pytest-asyncio>=0.23.5
+
+# --- DAY 14: SECURITY HARDENING ---
+python-jose[cryptography]  # JWT Token generation/validation
+passlib[bcrypt]            # Password hashing
+bcrypt==4.0.1              # <--- CRITICAL: Pin version to fix 72-byte error
+slowapi                    # Rate limiting (DDoS protection)
+python-multipart           # Required for OAuth2 form data
